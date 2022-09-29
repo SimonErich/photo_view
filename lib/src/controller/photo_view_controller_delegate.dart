@@ -132,6 +132,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
     final double originalScale = getScaleForScaleState(
       scaleState,
       scaleBoundaries,
+      2,
     );
 
     double prevScale = originalScale;
@@ -143,7 +144,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
       prevScale = nextScale;
       prevScaleState = nextScaleState;
       nextScaleState = scaleStateCycle(prevScaleState);
-      nextScale = getScaleForScaleState(nextScaleState, scaleBoundaries);
+      nextScale = getScaleForScaleState(nextScaleState, scaleBoundaries, 2);
     } while (prevScale == nextScale && scaleState != nextScaleState);
 
     if (originalScale == nextScale) {

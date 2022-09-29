@@ -7,20 +7,29 @@ import 'package:photo_view/src/photo_view_scale_state.dart';
 /// Given a [PhotoViewScaleState], returns a scale value considering [scaleBoundaries].
 double getScaleForScaleState(
   PhotoViewScaleState scaleState,
-  ScaleBoundaries scaleBoundaries,
-) {
+  ScaleBoundaries scaleBoundaries, [
+  double? newScale,
+]) {
+  if (newScale != null) {
+    return newScale;
+  }
+
   switch (scaleState) {
     case PhotoViewScaleState.initial:
+      return clampSize(
+        ((newScale == null) ? scaleBoundaries.initialScale : newScale),
+        scaleBoundaries,
+      );
     case PhotoViewScaleState.zoomedIn:
     case PhotoViewScaleState.zoomedOut:
-      return _clampSize(scaleBoundaries.initialScale, scaleBoundaries);
+      return clampSize(scaleBoundaries.initialScale, scaleBoundaries);
     case PhotoViewScaleState.covering:
-      return _clampSize(
+      return clampSize(
           _scaleForCovering(
               scaleBoundaries.outerSize, scaleBoundaries.childSize),
           scaleBoundaries);
     case PhotoViewScaleState.originalSize:
-      return _clampSize(1.0, scaleBoundaries);
+      return clampSize(1.0, scaleBoundaries);
     // Will never be reached
     default:
       return 0;
@@ -130,7 +139,7 @@ double _scaleForCovering(Size size, Size childSize) {
   return math.max(screenWidth / imageWidth, screenHeight / imageHeight);
 }
 
-double _clampSize(double size, ScaleBoundaries scaleBoundaries) {
+double clampSize(double size, ScaleBoundaries scaleBoundaries) {
   return size.clamp(scaleBoundaries.minScale, scaleBoundaries.maxScale);
 }
 
